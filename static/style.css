@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+body {
+    background: url('/static/background.png') no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%);
+    z-index: 1;
+}
+
+.container {
+    position: relative;
+    z-index: 2;
+    width: 90%;
+    max-width: 450px;
+}
+
+/* Typography Improvements */
+h1 {
+    color: white;
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+
+header p {
+    color: #accfbb;
+    font-size: 1rem;
+    margin-bottom: 40px;
+}
+
+/* Glassmorphism Card */
+.main-card {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 30px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Improved Option Cards */
+.option-buttons {
+    display: flex;
+    gap: 15px;
+    margin: 25px 0;
+}
+
+.opt-card {
+    flex: 1;
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 20px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.opt-card:hover {
+    border-color: #10b981;
+    background: #ecfdf5;
+    transform: translateY(-5px);
+}
+
+.opt-card img { width: 45px; margin-bottom: 12px; }
+
+.opt-card p {
+    color: #1e293b !important;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* Action Buttons */
+.btn-large {
+    width: 100%;
+    padding: 16px;
+    background: #10b981;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+}
+
+.btn-large:hover { background: #059669; transform: scale(1.02); }
+
+/* Result Layout Fix */
+#preview-img {
+    width: 100%;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+}
+
+.result-box { text-align: left; }
+
+.result-box h3 {
+    color: #0f172a;
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+}
+
+.result-box p {
+    color: #475569 !important;
+    margin-bottom: 12px;
+    font-size: 1rem;
+}
+
+#res-class {
+    background: #d1fae5;
+    color: #065f46 !important;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+#res-conf { color: #10b981 !important; font-weight: 700; }
+
+#res-info {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #64748b !important;
+    background: #f1f5f9;
+    padding: 15px;
+    border-radius: 15px;
+    margin-top: 15px;
+}
+
+hr { border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0; }

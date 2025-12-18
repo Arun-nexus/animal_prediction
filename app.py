@@ -1,54 +1,55 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException, Request
-from fastapi.responses import JSONResponse
-from functions.functions import info, image_name
+from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
+
+from functions.functions import image_name, info
+from database.animal_information import class_names
 
 app = FastAPI()
 
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    return JSONResponse(
-        status_code=500,
-        content={
-            "status": 500,
-            "error": "Internal Server Error",
-            "detail": str(exc)
-        }
-    )
-
-@app.exception_handler(HTTPException)
-async def http_exception_handler(request: Request, exc: HTTPException):
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={
-            "status": exc.status_code,
-            "error": exc.detail,
-            "detail": "Request could not be processed"
-        }
-    )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
-@app.get("/")
-def root():
-    return {"msg": "animal prediction model"}
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
+
+@app.get("/", response_class=HTMLResponse)
+async def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 
 @app.post("/predict")
 async def predict(image: UploadFile = File(...)):
     try:
-        prob, out = image_name(image)
+        prob_list, out_list = await image_name(image)
+
+        def get_number(data):
+            if isinstance(data, list):
+                return get_number(data[0])
+            return data
+
+        final_conf = get_number(prob_list)
+        final_idx = get_number(out_list)
+
+        main_info, _ = info(out_list, prob_list)
+
         return {
-            "class": out,
-            "confidence": float(prob)
+            "class": str(class_names[int(final_idx)]),
+            "confidence": float(final_conf),
+            "info": str(main_info)
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        import traceback
+        print(f"DEBUG ERROR: {traceback.format_exc()}")
+        return JSONResponse(status_code=500, content={"detail": str(e)})
 
-
-@app.post("/info")
-def get_info(class_name: str):
-    try:
-        return {
-            "info": info(class_name)
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+if __name__ == "__main__":
+    uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)

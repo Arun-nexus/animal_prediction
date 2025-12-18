@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal AI Predictor</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="container">
+        <div id="home-screen">
+            <header>
+                <h1>Animal Species Identifier</h1>
+                <p>Advanced AI for Wildlife Monitoring</p>
+            </header>
+            <button class="btn btn-large" onclick="showOptions()">Try Now</button>
+        </div>
+
+        <div id="options-screen" class="main-card" style="display: none;">
+            <h2>Choose Image Source</h2>
+            <div class="option-buttons">
+                <div class="opt-card" onclick="document.getElementById('cameraInput').click()">
+                    <img src="https://img.icons8.com/ios/100/camera--v1.png" alt="Camera">
+                    <p>Take Photo</p>
+                    <input type="file" id="cameraInput" accept="image/*" capture="camera" hidden onchange="handleFile(this)">
+                </div>
+
+                <div class="opt-card" onclick="document.getElementById('systemInput').click()">
+                    <img src="https://img.icons8.com/ios/100/folder-invoices--v1.png" alt="System">
+                    <p>From System</p>
+                    <input type="file" id="systemInput" accept="image/*" hidden onchange="handleFile(this)">
+                </div>
+            </div>
+            <button class="btn-text" onclick="goBack()">← Back</button>
+        </div>
+
+        <div id="result-screen" class="main-card" style="display: none;">
+            <img id="preview-img" src="" alt="Preview">
+            <div id="result-data" class="result-box">
+                <h3>Analysis Result:</h3>
+                <p><strong>Species:</strong> <span id="res-class">Loading...</span></p>
+                <p><strong>Confidence:</strong> <span id="res-conf">0%</span></p>
+                <hr>
+                <p id="res-info">Processing image...</p>
+                <button class="btn" onclick="location.reload()">Try Another</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showOptions() {
+            document.getElementById('home-screen').style.display = 'none';
+            document.getElementById('options-screen').style.display = 'block';
+        }
+
+        function goBack() {
+            document.getElementById('home-screen').style.display = 'block';
+            document.getElementById('options-screen').style.display = 'none';
+        }
+
+        async function handleFile(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            // UI Switch
+            document.getElementById('options-screen').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+            document.getElementById('preview-img').src = URL.createObjectURL(file);
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                // Fetch request to FastAPI
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorJson = await response.json();
+                    throw new Error(errorJson.detail || "Server Error");
+                }
+
+                const data = await response.json();
+
+                // Updating UI with results
+                document.getElementById('res-class').innerText = data.class;
+                document.getElementById('res-conf').innerText = (data.confidence * 100).toFixed(2) + "%";
+                document.getElementById('res-info').innerText = data.info || "No additional information found.";
+
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Prediction Failed: " + error.message);
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
