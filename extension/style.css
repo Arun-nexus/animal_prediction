@@ -1,0 +1,11 @@
+body{
+width:300px;
+font-family:Arial;
+}
+
+#chat{
+height:150px;
+overflow:auto;
+border:1px solid black;
+margin-top:10px;
+}
