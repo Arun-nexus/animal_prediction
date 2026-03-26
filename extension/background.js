@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8000";
+const API_BASE = "http://32.193.13.49:8000";
 const INJECT_FLAG = "__circleSearchInjected";
 
 // ─── Helpers ─────────────────────────────────────────
@@ -186,7 +186,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if (e.message?.includes("aborted") || e.message?.includes("timeout")) {
         userMsg = "Backend respond nahi kar raha (timeout). Server check karo.";
       } else if (e.message?.includes("fetch") || e.message?.includes("Failed to fetch")) {
-        userMsg = "Backend se connect nahi ho paya. localhost:8000 chal raha hai?";
+        userMsg = "Backend se connect nahi ho paya. 32.193.13.49:8000 chal raha hai?";
       } else if (e.message?.includes("capture")) {
         userMsg = "Screenshot lene mein problem aayi. Tab active hai?";
       } else if (e.message?.includes("HTTP")) {

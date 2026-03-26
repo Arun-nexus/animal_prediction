@@ -27,7 +27,7 @@ chrome.storage.local.get("prediction",(data)=>{
 
 document.getElementById("query").onclick=()=>{
 
-    ws = new WebSocket("ws://localhost:8000/query/123")
+    ws = new WebSocket("ws://32.193.13.49:8000/query/123")
 
     document.getElementById("msg").style.display="block"
     document.getElementById("send").style.display="block"

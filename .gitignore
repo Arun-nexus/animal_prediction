@@ -16,7 +16,7 @@ logs/
 .DS_Store
 Thumbs.db
 
-aws/
+
 
 extension/node_modules/
 extension/dist/
