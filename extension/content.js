@@ -742,7 +742,7 @@
     // ── WebSocket connect ──
     function connect() {
       try {
-        ws = new WebSocket("ws://32.193.13.49:8000/query/123");
+        ws = new WebSocket("wss://32.193.13.49:8000/query/123");
       } catch (e) {
         statusEl.textContent = "❌ Connection failed";
         return;
