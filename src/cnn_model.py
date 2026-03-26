@@ -3,19 +3,12 @@ from torchvision import models
 from torch import nn
 from logger import logging
 
-BACKBONE_PATH = "model/inital_model.pth"
-
 
 class AnimalCNN(nn.Module):
     def __init__(self, num_classes: int):
         super(AnimalCNN, self).__init__()
 
         self.base = models.efficientnet_b0(weights=None)
-        backbone_state = torch.load(
-            BACKBONE_PATH, map_location="cpu", weights_only=True
-        )
-        self.base.load_state_dict(backbone_state)
-        logging.info("Backbone weights loaded from local file.")
 
         for param in self.base.features.parameters():
             param.requires_grad = False
@@ -32,10 +25,7 @@ class AnimalCNN(nn.Module):
         return self.base(x)
 
 
-def load_model(
-    model_path: str,
-    num_classes: int = 90
-) -> tuple[nn.Module, torch.device]:
+def load_model(model_path: str, num_classes: int = 90):
     try:
         logging.info("Loading AnimalCNN model...")
 
@@ -44,12 +34,13 @@ def load_model(
 
         model = AnimalCNN(num_classes=num_classes).to(device)
 
-        model.load_state_dict(
-            torch.load(model_path, map_location=device, weights_only=True)
-        )
+        state_dict = torch.load(model_path, map_location=device)
+
+        model.load_state_dict(state_dict)
 
         model.eval()
         logging.info("AnimalCNN loaded and ready.")
+
         return model, device
 
     except FileNotFoundError:

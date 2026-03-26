@@ -19,13 +19,14 @@ async def lifespan(app: FastAPI):
     try:
         os.makedirs("model", exist_ok=True)
 
-        model_path = os.path.join("model", "initial_model.pth")
-
-        download_from_s3(
-            bucket_name="animal-prediction",
-            s3_file_name="models/model.pth",
-            local_file_path=model_path
-        )
+        model_path = os.path.join("model", "inital_model.pth")
+        
+        if not os.path.exists(model_path):
+            download_from_s3(
+                bucket_name="animal-prediction",
+                s3_file_anme="models/model.pth",
+                local_file_path=model_path
+            )
 
         model, device = load_model(model_path, num_classes=90)
 
